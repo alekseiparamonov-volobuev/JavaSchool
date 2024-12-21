@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "operationType": {
+      "type": "string",
+      "enum": [
+        "LENDING_OF_FUNDS",
+        "CLEARING_OF_CHEQUES",
+        "REMITTANCE_OF_FUNDS",
+        "BILL_PAYMENT_SERVICES",
+        "INVESTMENT_BANKING",
+        "SOCIAL_OBJECTIVES"
+      ]
+    },
+    "amount": {
+      "type": "number"
+    },
+    "accountNumber": {
+      "type": "string"
+    },
+    "operationTime": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "operationType",
+    "amount",
+    "accountNumber",
+    "operationTime"
+  ]
+}
