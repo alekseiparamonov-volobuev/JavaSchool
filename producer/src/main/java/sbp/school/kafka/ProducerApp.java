@@ -1,20 +1,18 @@
 package sbp.school.kafka;
 
-import sbp.school.kafka.dto.TransactionDto;
-import sbp.school.kafka.enums.OperationType;
 import sbp.school.kafka.service.ProducerService;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ProducerApp {
 
     public static void main(String[] args) {
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
         ProducerService producerService = new ProducerService();
-        producerService.send(new TransactionDto()
-                .setOperationType(OperationType.SOCIAL_OBJECTIVES)
-                .setAmount(new BigDecimal(231))
-                .setAccountNumber("124654234")
-                .setOperationTime(LocalDateTime.now()));
+        for (int i = 0; i < 20; i++) {
+            executorService.submit(producerService);
+        }
+        executorService.shutdown();
     }
 }
