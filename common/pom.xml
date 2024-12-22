@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>sbp</groupId>
-        <artifactId>Kafka-lectures</artifactId>
+        <artifactId>kafka-lectures</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 

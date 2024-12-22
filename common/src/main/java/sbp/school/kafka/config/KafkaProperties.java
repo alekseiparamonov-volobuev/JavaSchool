@@ -1,6 +1,7 @@
 package sbp.school.kafka.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import sbp.school.kafka.utils.PropertiesLoader;
 
@@ -10,9 +11,24 @@ import java.util.Properties;
 @Slf4j
 public class KafkaProperties {
 
+    private static final String CONSUMER_PROPERTIES_FILE = "consumer.properties";
     private static final String PRODUCER_PROPERTIES_FILE = "producer.properties";
+    private static final String COMMON_PROPERTIES_FILE = "common.properties";
 
-    public static Properties getKafkaProducerProperties() {
+    public static Properties getConsumerProperties() {
+        try {
+            Properties fileProps = PropertiesLoader.loadProperties(CONSUMER_PROPERTIES_FILE);
+            Properties appProps = new Properties();
+            putProperty(appProps, fileProps, ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG);
+            putProperty(appProps, fileProps, ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG);
+            putProperty(appProps, fileProps, ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG);
+            return appProps;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Properties getProducerProperties() {
         try {
             Properties fileProps = PropertiesLoader.loadProperties(PRODUCER_PROPERTIES_FILE);
             Properties appProps = new Properties();
@@ -30,7 +46,7 @@ public class KafkaProperties {
 
     public static String getTransactionTopic() {
         try {
-            Properties fileProps = PropertiesLoader.loadProperties(PRODUCER_PROPERTIES_FILE);
+            Properties fileProps = PropertiesLoader.loadProperties(COMMON_PROPERTIES_FILE);
             return fileProps.getProperty("transaction.topic");
         } catch (IOException e) {
             throw new RuntimeException(e);
