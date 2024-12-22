@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TransactionSerializer implements Serializer<TransactionDto> {
 
-    private static final String TRANSACTION_JSON = "producer/src/main/resources/json/transaction.json";
+    private static final String TRANSACTION_JSON = "common/src/main/resources/json/transaction.json";
 
     /**
      * Convert {@code data} into a byte array.
@@ -58,7 +58,8 @@ public class TransactionSerializer implements Serializer<TransactionDto> {
                 log.error("Исключение при сериализации {} : {}", data, e.getMessage());
                 throw new RuntimeException(e);
             } catch (IOException e) {
-                log.error("", e);
+                log.error("Исключение при чтении файла {}", TRANSACTION_JSON, e);
+                throw new RuntimeException(e);
             }
         }
         return null;
