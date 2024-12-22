@@ -10,11 +10,11 @@ import java.util.Properties;
 @Slf4j
 public class KafkaProperties {
 
-    private static final String PROPERTIES_FILE = "producer.properties";
+    private static final String PRODUCER_PROPERTIES_FILE = "producer.properties";
 
     public static Properties getKafkaProducerProperties() {
         try {
-            Properties fileProps = PropertiesLoader.loadProperties(PROPERTIES_FILE);
+            Properties fileProps = PropertiesLoader.loadProperties(PRODUCER_PROPERTIES_FILE);
             Properties appProps = new Properties();
             putProperty(appProps, fileProps, ProducerConfig.BOOTSTRAP_SERVERS_CONFIG);
             putProperty(appProps, fileProps, ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG);
@@ -30,7 +30,7 @@ public class KafkaProperties {
 
     public static String getTransactionTopic() {
         try {
-            Properties fileProps = PropertiesLoader.loadProperties(PROPERTIES_FILE);
+            Properties fileProps = PropertiesLoader.loadProperties(PRODUCER_PROPERTIES_FILE);
             return fileProps.getProperty("transaction.topic");
         } catch (IOException e) {
             throw new RuntimeException(e);

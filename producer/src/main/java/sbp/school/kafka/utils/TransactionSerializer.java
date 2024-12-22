@@ -37,7 +37,7 @@ public class TransactionSerializer implements Serializer<TransactionDto> {
             mapper.registerModule(new JavaTimeModule());
             mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
             try {
-                JsonNode jsonSchema = mapper.readTree(new File("producer/src/main/resources/json/transaction.json"));
+                JsonNode jsonSchema = mapper.readTree(new File("common/src/main/resources/json/transaction.json"));
                 String value = mapper.writeValueAsString(data);
                 JsonNode jsonValue = mapper.readTree(value);
                 JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);

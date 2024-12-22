@@ -27,5 +27,6 @@ public class ProducerService {
                                 exception.getMessage(), recordMetadata.offset(), recordMetadata.partition());
                     }
                 });
+        producer.flush();
     }
 }
