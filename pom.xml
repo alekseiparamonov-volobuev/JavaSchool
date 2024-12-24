@@ -18,6 +18,8 @@
         <jackson.version>2.18.1</jackson.version>
         <lombok.version>1.18.30</lombok.version>
         <slf4.version>2.0.16</slf4.version>
+        <assertj-core.version>3.26.3</assertj-core.version>
+        <mockito-core.version>5.14.2</mockito-core.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -55,6 +57,12 @@
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter</artifactId>
                 <version>RELEASE</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj-core.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

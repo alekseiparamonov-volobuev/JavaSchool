@@ -11,21 +11,29 @@ import sbp.school.kafka.dto.TransactionDto;
 public class ProducerService {
 
     private final KafkaProducer<String, TransactionDto> producer;
-    private final String transactionTopic;
+    private final String topic;
 
     public ProducerService() {
-        this.transactionTopic = KafkaProperties.getTransactionTopic();
+        this.topic = KafkaProperties.getTransactionTopic();
         this.producer = KafkaProducerConfig.getKafkaProducer();
     }
 
     public void send(TransactionDto transaction) {
-        log.info("Отправка {} в топик {}", transaction, transactionTopic);
-        producer.send(new ProducerRecord<>(transactionTopic, transaction.getOperationType().name(), transaction),
-                (recordMetadata, exception) -> {
-                    if (exception != null) {
-                        log.error("{}. offset = {}, partition = {}",
-                                exception.getMessage(), recordMetadata.offset(), recordMetadata.partition());
-                    }
-                });
+        log.info("Отправка {} в топик {}", transaction, topic);
+        try {
+            producer.send(new ProducerRecord<>(topic, transaction.getOperationType().name(), transaction),
+                    (recordMetadata, exception) -> {
+                        if (exception == null) {
+                            log.debug("offset = {}, partition = {}",
+                                    recordMetadata.offset(), recordMetadata.partition());
+                        } else {
+                            log.error("{}. offset = {}, partition = {}",
+                                    exception.getMessage(), recordMetadata.offset(), recordMetadata.partition());
+                        }
+                    });
+        } catch (Throwable ex) {
+            log.error("Ошибка при отправке {} в {}.", transaction, topic, ex);
+            producer.flush();
+        }
     }
 }

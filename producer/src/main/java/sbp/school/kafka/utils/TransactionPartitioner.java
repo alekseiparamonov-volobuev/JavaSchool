@@ -81,6 +81,6 @@ public class TransactionPartitioner implements Partitioner {
      * @throws IllegalArgumentException {@link Enum#valueOf(Class, String)}
      */
     private void validateKey(Object key) {
-        OperationType.valueOf((String) key);
+        OperationType.valueOf( key.toString());
     }
 }
