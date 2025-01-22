@@ -18,8 +18,9 @@ import java.util.Map;
 @Slf4j
 public class ConsumerService extends Thread {
 
+    private static final int RECORD_TO_COMMIT_COUNT = 150;
     private final String groupId;
-    private Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
+    private final Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
 
     public ConsumerService(String groupId) {
         this.groupId = groupId;
@@ -28,7 +29,8 @@ public class ConsumerService extends Thread {
 
     public void poll() {
         int counter = 0;
-        try (KafkaConsumer<String, TransactionDto> consumer = KafkaConsumerConfig.getKafkaConsumer(groupId)) {
+        KafkaConsumer<String, TransactionDto> consumer = KafkaConsumerConfig.getKafkaConsumer(groupId);
+        try {
             consumer.subscribe(List.of(KafkaProperties.getTransactionTopic()));
             while (true) {
                 ConsumerRecords<String, TransactionDto> records = consumer.poll(Duration.ofMillis(100));
@@ -37,7 +39,7 @@ public class ConsumerService extends Thread {
                             record.topic(), record.partition(), record.offset(), consumer.groupMetadata().groupId(), record.value());
                     currentOffsets.put(new TopicPartition(record.topic(), record.partition()),
                             new OffsetAndMetadata(record.offset() + 1));
-                    if (counter % 150 == 0) {
+                    if (counter % RECORD_TO_COMMIT_COUNT == 0) {
                         consumer.commitAsync(currentOffsets, null);
                         counter++;
                     }
@@ -46,6 +48,9 @@ public class ConsumerService extends Thread {
             }
         } catch (Exception ex) {
             log.error("Unexpected error or OutOfMemory", ex);
+            consumer.commitAsync();
+        } finally {
+            consumer.close();
         }
     }
 
