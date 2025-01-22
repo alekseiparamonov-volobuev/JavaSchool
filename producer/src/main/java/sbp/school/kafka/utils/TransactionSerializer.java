@@ -13,7 +13,6 @@ import org.apache.kafka.common.security.oauthbearer.internals.secured.ValidateEx
 import org.apache.kafka.common.serialization.Serializer;
 import sbp.school.kafka.dto.TransactionDto;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -34,12 +33,14 @@ public class TransactionSerializer implements Serializer<TransactionDto> {
      */
     @Override
     public byte[] serialize(String topic, TransactionDto data) {
-        if (data != null) {
+        if (data == null) {
+            throw new NullPointerException("Данные не совсем валидны : [ null ]");
+        } else {
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
             mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
             try {
-                JsonNode jsonSchema = mapper.readTree(new File(TRANSACTION_JSON));
+                JsonNode jsonSchema = mapper.readTree(getClass().getResourceAsStream(TRANSACTION_JSON));
                 String value = mapper.writeValueAsString(data);
                 JsonNode jsonValue = mapper.readTree(value);
                 JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
@@ -62,7 +63,6 @@ public class TransactionSerializer implements Serializer<TransactionDto> {
                 throw new RuntimeException(e);
             }
         }
-        return null;
     }
 
 }

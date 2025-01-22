@@ -63,7 +63,6 @@ public class TransactionPartitioner implements Partitioner {
 
     /**
      * @param size количество партиций в топике
-     *
      * @throws IllegalArgumentException если количество партиций менее количества операции {@link OperationType}
      */
     private void validatePartitionSize(int size) {
@@ -77,10 +76,9 @@ public class TransactionPartitioner implements Partitioner {
 
     /**
      * @param key для маппинга на {@link OperationType}
-     *
      * @throws IllegalArgumentException {@link Enum#valueOf(Class, String)}
      */
     private void validateKey(Object key) {
-        OperationType.valueOf((String) key);
+        OperationType.valueOf(key.toString());
     }
 }
