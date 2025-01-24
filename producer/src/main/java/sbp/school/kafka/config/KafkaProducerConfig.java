@@ -8,7 +8,7 @@ import java.util.Properties;
 public class KafkaProducerConfig {
 
     public static KafkaProducer<String, TransactionDto> getKafkaProducer() {
-        Properties properties = KafkaProperties.getKafkaProducerProperties();
+        Properties properties = KafkaProperties.getProducerProperties();
         return new KafkaProducer<>(properties);
     }
 }

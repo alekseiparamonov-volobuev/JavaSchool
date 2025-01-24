@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TransactionSerializer implements Serializer<TransactionDto> {
 
-    private static final String TRANSACTION_JSON = "/json/transaction.json";
+    private static final String TRANSACTION_JSON = "common/src/main/resources/json/transaction.json";
 
     /**
      * Convert {@code data} into a byte array.
