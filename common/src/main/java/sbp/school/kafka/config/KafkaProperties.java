@@ -12,20 +12,16 @@ import java.util.Properties;
 public class KafkaProperties {
 
     private static final String CONSUMER_PROPERTIES_FILE = "consumer.properties";
+    private static final String REVERSE_CONSUMER_PROPERTIES_FILE = "reverse.consumer.properties";
     private static final String PRODUCER_PROPERTIES_FILE = "producer.properties";
     private static final String COMMON_PROPERTIES_FILE = "common.properties";
 
     public static Properties getConsumerProperties() {
-        try {
-            Properties fileProps = PropertiesLoader.loadProperties(CONSUMER_PROPERTIES_FILE);
-            Properties appProps = new Properties();
-            putProperty(appProps, fileProps, ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG);
-            putProperty(appProps, fileProps, ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG);
-            putProperty(appProps, fileProps, ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG);
-            return appProps;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return getConsumerProperties(CONSUMER_PROPERTIES_FILE);
+    }
+
+    public static Properties getReverseConsumerProperties() {
+        return getConsumerProperties(REVERSE_CONSUMER_PROPERTIES_FILE);
     }
 
     public static Properties getProducerProperties() {
@@ -48,6 +44,28 @@ public class KafkaProperties {
         try {
             Properties fileProps = PropertiesLoader.loadProperties(COMMON_PROPERTIES_FILE);
             return fileProps.getProperty("transaction.topic");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String getReverseTransactionTopic() {
+        try {
+            Properties fileProps = PropertiesLoader.loadProperties(COMMON_PROPERTIES_FILE);
+            return fileProps.getProperty("reverse.topic");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static Properties getConsumerProperties(String propertiesFile) {
+        try {
+            Properties fileProps = PropertiesLoader.loadProperties(propertiesFile);
+            Properties appProps = new Properties();
+            putProperty(appProps, fileProps, ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG);
+            putProperty(appProps, fileProps, ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG);
+            putProperty(appProps, fileProps, ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG);
+            return appProps;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
