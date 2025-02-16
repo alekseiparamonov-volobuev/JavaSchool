@@ -15,6 +15,7 @@ public class KafkaProperties {
     private static final String REVERSE_CONSUMER_PROPERTIES_FILE = "reverse.consumer.properties";
     private static final String PRODUCER_PROPERTIES_FILE = "producer.properties";
     private static final String COMMON_PROPERTIES_FILE = "common.properties";
+    private static final String CHECKSUM_PRODUCER_PROPERTIES_FILE = "producer.checksum.properties";
 
     public static Properties getConsumerProperties() {
         return getConsumerProperties(CONSUMER_PROPERTIES_FILE);
@@ -24,7 +25,7 @@ public class KafkaProperties {
         return getConsumerProperties(REVERSE_CONSUMER_PROPERTIES_FILE);
     }
 
-    public static Properties getProducerProperties() {
+    public static Properties getMainTransactionProducerProperties() {
         try {
             Properties fileProps = PropertiesLoader.loadProperties(PRODUCER_PROPERTIES_FILE);
             Properties appProps = new Properties();
@@ -34,6 +35,20 @@ public class KafkaProperties {
             putProperty(appProps, fileProps, ProducerConfig.PARTITIONER_CLASS_CONFIG);
             putProperty(appProps, fileProps, ProducerConfig.ACKS_CONFIG);
             putProperty(appProps, fileProps, ProducerConfig.COMPRESSION_TYPE_CONFIG);
+            return appProps;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Properties getChecksumTransactionProducerProperties() {
+        try {
+            Properties fileProps = PropertiesLoader.loadProperties(CHECKSUM_PRODUCER_PROPERTIES_FILE);
+            Properties appProps = new Properties();
+            putProperty(appProps, fileProps, ProducerConfig.BOOTSTRAP_SERVERS_CONFIG);
+            putProperty(appProps, fileProps, ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG);
+            putProperty(appProps, fileProps, ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG);
+            putProperty(appProps, fileProps, ProducerConfig.ACKS_CONFIG);
             return appProps;
         } catch (IOException e) {
             throw new RuntimeException(e);
