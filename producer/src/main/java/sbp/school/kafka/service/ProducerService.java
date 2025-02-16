@@ -28,6 +28,7 @@ public class ProducerService extends Thread {
 
     private Timer timer;
     public static final String REVERSE_GROUP_ID = "reverse1";
+    private static final int PERIOD_TO_CHECK_CHECKSUM = 10000;
     private final KafkaProducer<String, TransactionDto> producer;
     private final KafkaConsumer<Long, AckDto> reverseConsumer;
     private final String topic;
@@ -38,7 +39,7 @@ public class ProducerService extends Thread {
     public ProducerService() {
         this.topic = KafkaProperties.getTransactionTopic();
         this.reverseTopic = KafkaProperties.getReverseTransactionTopic();
-        this.producer = KafkaProducerConfig.getKafkaProducer();
+        this.producer = KafkaProducerConfig.getMainProducer();
         this.reverseConsumer = KafkaReverseConsumerConfig.getKafkaConsumer(REVERSE_GROUP_ID);
         this.sentTransactionsCheckSums = new ConcurrentHashMap<>();
         this.acceptedTransactionsCheckSums = new ConcurrentHashMap<>();
@@ -96,7 +97,7 @@ public class ProducerService extends Thread {
      */
     public void startTimer() {
         timer = new Timer();
-        timer.scheduleAtFixedRate(new ChecksumScheduledTask(), 0, 10000);
+        timer.scheduleAtFixedRate(new ChecksumScheduledTask(), 0, PERIOD_TO_CHECK_CHECKSUM);
     }
 
     /**
@@ -105,7 +106,7 @@ public class ProducerService extends Thread {
     private Map<Long, AckDto> getCheckingEntities(Map<Long, AckDto> transactionsCheckSums) {
         return transactionsCheckSums.entrySet()
                 .stream()
-                .filter(entry -> (System.currentTimeMillis() - entry.getKey() >= 10000))
+                .filter(entry -> (System.currentTimeMillis() - entry.getKey() >= PERIOD_TO_CHECK_CHECKSUM))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
