@@ -10,7 +10,7 @@ import java.util.Arrays;
 public class TransactionGenerator {
 
     public static TransactionDto getTransaction() {
-      return   new TransactionDto()
+        return new TransactionDto()
                 .setOperationType(Arrays.stream(OperationType.values())
                         .skip(getRandomNumberInRange(0, OperationType.values().length))
                         .findFirst()
