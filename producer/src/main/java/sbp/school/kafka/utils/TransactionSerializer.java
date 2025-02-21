@@ -64,5 +64,4 @@ public class TransactionSerializer implements Serializer<TransactionDto> {
             }
         }
     }
-
 }
