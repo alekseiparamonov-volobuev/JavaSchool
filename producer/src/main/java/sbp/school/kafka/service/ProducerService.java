@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import sbp.school.kafka.config.KafkaProducerConfig;
 import sbp.school.kafka.config.KafkaProperties;
@@ -28,7 +28,7 @@ public class ProducerService extends Thread {
 
     private Timer timer;
     public static final String REVERSE_GROUP_ID = "reverse1";
-    private final KafkaProducer<String, TransactionDto> producer;
+    private Producer<String, TransactionDto> producer;
     private final KafkaConsumer<Long, AckDto> reverseConsumer;
     private final String topic;
     private final String reverseTopic;
@@ -42,6 +42,10 @@ public class ProducerService extends Thread {
         this.reverseConsumer = KafkaReverseConsumerConfig.getKafkaConsumer(REVERSE_GROUP_ID);
         this.sentTransactionsCheckSums = new ConcurrentHashMap<>();
         this.acceptedTransactionsCheckSums = new ConcurrentHashMap<>();
+    }
+
+    public void setKafkaProducer(Producer<String, TransactionDto> producer) {
+        this.producer = producer;
     }
 
     @Override
